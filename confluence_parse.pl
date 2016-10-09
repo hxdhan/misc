@@ -3,7 +3,9 @@ use warnings;
 use Data::Dumper;
 use feature qw(say);
 use XML::Parser;
-
+#
+#这段代码是为了从confluence 备份文件中提取一部分节点，用来导入其他系统使用，也可以可以用来作为处理xml文件的例子。
+#
 my $user = 0;
 my $text = '';
 my $parser = XML::Parser->new(Handlers=>{Start=>\&handle_start,End=>\&handle_end,Char=>0});
@@ -35,7 +37,6 @@ sub handle_end {
       print "</$elt>";
       if ($elt eq 'object') {
         $user = !$user;
-	print "\n";
       }
 
     }
@@ -48,17 +49,17 @@ sub handle_char {
 sub char_handler
 {
     my ($xp, $text) = @_;
-    if (length($text) && $user) {
+    if (length($text)) {
       $text = $xp->xml_escape($text, '>');
       print $text;
     }
 }
 sub cdata_start {
   my $xp = shift;
-  print '<![CDATA[' if $user;
+  print '<![CDATA[';
 }
 
 sub cdata_end {
   my $xp = shift;
-  print ']]>' if $user;
+  print ']]>' ;
 }
